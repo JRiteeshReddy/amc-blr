@@ -10,14 +10,44 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you soon!",
-    });
-    setFormData({ name: "", email: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          to: "animeandmangaclubblr@gmail.com"
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Message Sent!",
+          description: "Thank you for contacting us. We'll get back to you soon!",
+        });
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        throw new Error("Failed to send message");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -28,7 +58,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 bg-gradient-to-b from-purple/5 to-pink/5 dark:from-purple/20 dark:to-pink/20">
+    <section id="contact" className="py-20 bg-white/50 dark:bg-purple/20">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -42,7 +72,7 @@ const Contact = () => {
                 href="https://www.instagram.com/animeandmangaclubblr/profilecard/?igsh=MWwxY284MmNkYTZ4ZA=="
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple via-pink to-purple bg-[length:200%_100%] hover:animate-shine text-white rounded-full transition-all duration-300 hover:scale-105"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-pink hover:bg-purple text-white rounded-full transition-all duration-300 hover:scale-105"
               >
                 <Instagram className="w-5 h-5" />
                 Follow us on Instagram
@@ -50,7 +80,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="bg-white/50 dark:bg-white/10 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
+          <div className="glass p-8 rounded-2xl shadow-lg">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-purple dark:text-white mb-2">
@@ -99,9 +129,10 @@ const Contact = () => {
 
               <button
                 type="submit"
-                className="w-full px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple via-pink to-purple bg-[length:200%_100%] hover:animate-shine rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+                disabled={isSubmitting}
+                className="w-full px-8 py-4 text-lg font-semibold text-white bg-pink hover:bg-purple rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50"
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>

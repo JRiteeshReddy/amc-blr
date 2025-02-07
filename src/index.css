@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply bg-white dark:bg-purple/95 text-purple dark:text-white antialiased transition-colors duration-300;
+    @apply bg-[#F1F0FB] dark:bg-purple/95 text-purple dark:text-white antialiased transition-colors duration-300;
   }
 }
 
