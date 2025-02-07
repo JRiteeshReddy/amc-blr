@@ -9,12 +9,12 @@
   }
 
   body {
-    @apply bg-white text-purple antialiased;
+    @apply bg-white dark:bg-purple/95 text-purple dark:text-white antialiased transition-colors duration-300;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/50 backdrop-blur-sm;
+    @apply bg-white/50 dark:bg-white/10 backdrop-blur-sm;
   }
 }
